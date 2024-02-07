@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### SSH KEYS ###
+*.pem
+*.ppk
+
 ### STS ###
 .apt_generated
 .classpath
