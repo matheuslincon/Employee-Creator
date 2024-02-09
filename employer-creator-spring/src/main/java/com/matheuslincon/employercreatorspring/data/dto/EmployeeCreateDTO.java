@@ -3,10 +3,11 @@ package com.matheuslincon.employercreatorspring.data.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Objects;
 
-public class EmployeeCreateDTO {
+public class EmployeeCreateDTO extends RepresentationModel<EmployeeCreateDTO> {
 
     @NotBlank
     private String firstName;

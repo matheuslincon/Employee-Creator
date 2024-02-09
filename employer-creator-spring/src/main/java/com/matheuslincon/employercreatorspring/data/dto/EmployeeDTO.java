@@ -1,8 +1,10 @@
 package com.matheuslincon.employercreatorspring.data.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import java.util.Objects;
 
-public class EmployeeDTO {
+public class EmployeeDTO extends RepresentationModel<EmployeeDTO> {
     private Long id;
     private String firstName;
     private String middleName;

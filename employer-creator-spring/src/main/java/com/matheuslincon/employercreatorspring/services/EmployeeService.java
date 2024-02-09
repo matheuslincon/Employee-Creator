@@ -1,5 +1,6 @@
 package com.matheuslincon.employercreatorspring.services;
 
+import com.matheuslincon.employercreatorspring.controllers.EmployeeController;
 import com.matheuslincon.employercreatorspring.data.dto.EmployeeCreateDTO;
 import com.matheuslincon.employercreatorspring.data.dto.EmployeeDTO;
 import com.matheuslincon.employercreatorspring.data.dto.EmployeeUpdateDTO;
@@ -8,6 +9,8 @@ import com.matheuslincon.employercreatorspring.model.Employee;
 import com.matheuslincon.employercreatorspring.repositories.EmployeeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,20 +28,28 @@ public class EmployeeService {
     public List<EmployeeDTO> findAll() {
         List<Employee> employeeList = repository.findAll();
         return employeeList.stream()
-                .map(employee -> mapper.map(employee, EmployeeDTO.class))
+                .map(employee -> {
+                    EmployeeDTO employeeDTO = mapper.map(employee, EmployeeDTO.class);
+                    employeeDTO.add(linkTo(methodOn(EmployeeController.class).findById(employeeDTO.getId())).withSelfRel());
+                    return employeeDTO;
+                })
                 .collect(Collectors.toList());
     }
 
     public EmployeeDTO findById(Long id) {
         Employee employee = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID !"));
-        return mapper.map(employee, EmployeeDTO.class);
+        EmployeeDTO dto = mapper.map(employee, EmployeeDTO.class);
+        dto.add(linkTo(methodOn(EmployeeController.class).findById(id)).withSelfRel());
+        return dto;
     }
 
     public EmployeeDTO create(EmployeeCreateDTO data) {
 
         Employee newEmployee = mapper.map(data, Employee.class);
         Employee createdEmployee = repository.save(newEmployee);
-        return mapper.map(createdEmployee, EmployeeDTO.class);
+        EmployeeDTO dto = mapper.map(createdEmployee, EmployeeDTO.class);
+        dto.add(linkTo(methodOn(EmployeeController.class).findById(createdEmployee.getId())).withSelfRel());
+        return dto;
     }
 
     public EmployeeDTO update(Long id, EmployeeUpdateDTO data) {
@@ -55,7 +66,9 @@ public class EmployeeService {
         employee.setHoursType(data.getHoursType());
         employee.setHoursPerWeek(data.getHoursPerWeek());
 
-        return mapper.map(this.repository.save(employee), EmployeeDTO.class);
+        EmployeeDTO dto = mapper.map(this.repository.save(employee), EmployeeDTO.class);
+        dto.add(linkTo(methodOn(EmployeeController.class).findById(id)).withSelfRel());
+        return dto;
     }
 
     public void delete(Long id) {
