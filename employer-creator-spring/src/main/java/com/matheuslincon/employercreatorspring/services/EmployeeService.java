@@ -4,6 +4,7 @@ import com.matheuslincon.employercreatorspring.controllers.EmployeeController;
 import com.matheuslincon.employercreatorspring.data.dto.EmployeeCreateDTO;
 import com.matheuslincon.employercreatorspring.data.dto.EmployeeDTO;
 import com.matheuslincon.employercreatorspring.data.dto.EmployeeUpdateDTO;
+import com.matheuslincon.employercreatorspring.exceptions.RequiredObjectIsNullException;
 import com.matheuslincon.employercreatorspring.exceptions.ResourceNotFoundException;
 import com.matheuslincon.employercreatorspring.model.Employee;
 import com.matheuslincon.employercreatorspring.repositories.EmployeeRepository;
@@ -45,6 +46,8 @@ public class EmployeeService {
 
     public EmployeeDTO create(EmployeeCreateDTO data) {
 
+        if(data == null) throw new RequiredObjectIsNullException();
+
         Employee newEmployee = mapper.map(data, Employee.class);
         Employee createdEmployee = repository.save(newEmployee);
         EmployeeDTO dto = mapper.map(createdEmployee, EmployeeDTO.class);
@@ -53,6 +56,9 @@ public class EmployeeService {
     }
 
     public EmployeeDTO update(Long id, EmployeeUpdateDTO data) {
+
+        if(data == null) throw new RequiredObjectIsNullException();
+
         Employee employee = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID !"));
 
         employee.setFirstName(data.getFirstName());
