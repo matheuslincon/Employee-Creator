@@ -1,10 +1,9 @@
 package com.matheuslincon.employercreatorspring.unittests.mockito.services;
 
 import com.matheuslincon.employercreatorspring.data.dto.EmployeeCreateDTO;
-import com.matheuslincon.employercreatorspring.data.dto.EmployeeDTO;
 import com.matheuslincon.employercreatorspring.data.dto.EmployeeUpdateDTO;
+import com.matheuslincon.employercreatorspring.exceptions.RequiredObjectIsNullException;
 import com.matheuslincon.employercreatorspring.exceptions.ResourceNotFoundException;
-import com.matheuslincon.employercreatorspring.mapper.ModelMapperConfig;
 import com.matheuslincon.employercreatorspring.model.Employee;
 import com.matheuslincon.employercreatorspring.repositories.EmployeeRepository;
 import com.matheuslincon.employercreatorspring.services.EmployeeService;
@@ -20,7 +19,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.List;
 import java.util.Optional;
@@ -167,6 +165,18 @@ class EmployeeServiceTest {
     }
 
     @Test
+    void testCreateWithNullEmployee() {
+        Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
+            service.create(null);
+        });
+
+        String expectedMessage = "It is not allowed to persist a null object!";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
     void update() {
         Employee entity = input.mockEntity(1);
 
@@ -196,6 +206,18 @@ class EmployeeServiceTest {
         assertEquals("Finish Date Test1", result.getFinishDate());
         assertEquals("HoursType Test1", result.getHoursType());
         assertEquals(21, result.getHoursPerWeek());
+    }
+
+    @Test
+    void testUpdateWithNullEmployee() {
+        Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
+            service.update(1L,null);
+        });
+
+        String expectedMessage = "It is not allowed to persist a null object!";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
