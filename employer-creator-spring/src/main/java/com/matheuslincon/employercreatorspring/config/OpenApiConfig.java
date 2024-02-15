@@ -14,6 +14,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Employer Creator API with Spring Boot")
+                        .version("1.0.0")
                         .description("Rest API for managing employers")
                         .license(new License()
                                 .name("Apache 2.0")));
