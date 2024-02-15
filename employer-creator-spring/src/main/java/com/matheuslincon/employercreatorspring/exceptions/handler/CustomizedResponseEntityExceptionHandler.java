@@ -1,6 +1,7 @@
 package com.matheuslincon.employercreatorspring.exceptions.handler;
 
 import com.matheuslincon.employercreatorspring.exceptions.ExceptionResponse;
+import com.matheuslincon.employercreatorspring.exceptions.InvalidJwtAuthenticationException;
 import com.matheuslincon.employercreatorspring.exceptions.RequiredObjectIsNullException;
 import com.matheuslincon.employercreatorspring.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -50,5 +51,17 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                 request.getDescription(false));
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidJwtAuthenticationException.class)
+    public final ResponseEntity<ExceptionResponse> handleInvalidJwtAuthenticationExceptions(
+            Exception ex, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.FORBIDDEN);
     }
 }
