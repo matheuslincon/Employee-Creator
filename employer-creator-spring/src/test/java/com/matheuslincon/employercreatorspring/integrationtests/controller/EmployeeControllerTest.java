@@ -1,7 +1,6 @@
 package com.matheuslincon.employercreatorspring.integrationtests.controller;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,8 +9,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matheuslincon.employercreatorspring.config.TestConfig;
+import com.matheuslincon.employercreatorspring.integrationtests.dto.AccountCredentialsDTO;
 import com.matheuslincon.employercreatorspring.integrationtests.dto.EmployeeCreateDTO;
 import com.matheuslincon.employercreatorspring.integrationtests.dto.EmployeeDTO;
+import com.matheuslincon.employercreatorspring.integrationtests.dto.TokenDTO;
 import com.matheuslincon.employercreatorspring.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -35,6 +36,35 @@ public class EmployeeControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @Order(0)
+    public void authorization() throws JsonMappingException, JsonProcessingException {
+
+        AccountCredentialsDTO user = new AccountCredentialsDTO("matheus", "admin123");
+
+        var accessToken = given()
+                .basePath("/auth/signin")
+                    .port(TestConfig.SERVER_PORT)
+                    .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .body(user)
+                    .when()
+                .post()
+                    .then()
+                .statusCode(200)
+                    .extract()
+                        .body()
+                            .as(TokenDTO.class)
+                                .getAccessToken();
+
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfig.HEADER_PARAM_AUTHORIZATION, "Bearer " + accessToken)
+                .setBasePath("/api/employee")
+                .setPort(TestConfig.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+    }
+
+    @Test
     @Order(1)
     public void testCreate() throws JsonProcessingException {
         EmployeeCreateDTO employee = new EmployeeCreateDTO();
@@ -50,16 +80,9 @@ public class EmployeeControllerTest extends AbstractIntegrationTest {
         employee.setHoursType("Full-time");
         employee.setHoursPerWeek(40);
 
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfig.HEADER_PARAM_ORIGIN, "http://localhost:5173")
-                .setBasePath("/employee")
-                .setPort(TestConfig.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .header(TestConfig.HEADER_PARAM_ORIGIN, "http://localhost:5173")
                 .body(employee)
                 .when()
                     .post()
@@ -100,16 +123,10 @@ public class EmployeeControllerTest extends AbstractIntegrationTest {
         employee.setHoursType("Full-time");
         employee.setHoursPerWeek(40);
 
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfig.HEADER_PARAM_ORIGIN, "https://matheuslincon.com")
-                .setBasePath("/employee")
-                .setPort(TestConfig.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
+                .header(TestConfig.HEADER_PARAM_ORIGIN, "https://matheuslincon.com")
                 .body(employee)
                 .when()
                     .post()
@@ -128,31 +145,10 @@ public class EmployeeControllerTest extends AbstractIntegrationTest {
     @Test
     @Order(3)
     public void testFindById() throws JsonProcessingException {
-        EmployeeDTO employee = new EmployeeDTO();
-        employee.setId(1L);
-        employee.setFirstName("Matheus");
-        employee.setMiddleName("Lincon");
-        employee.setLastName("Andrade");
-        employee.setEmail("matheus@email.com");
-        employee.setMobile("123123123");
-        employee.setAddress("New York City, New York, US");
-        employee.setContractType("Permanent");
-        employee.setStartDate("21/01/2000");
-        employee.setFinishDate("21/01/2010");
-        employee.setHoursType("Full-time");
-        employee.setHoursPerWeek(40);
-
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfig.HEADER_PARAM_ORIGIN, "http://localhost:5173")
-                .setBasePath("/employee")
-                .setPort(TestConfig.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
-                .pathParam("id", employee.getId())
+                .header(TestConfig.HEADER_PARAM_ORIGIN, "http://localhost:5173")
+                .pathParam("id", 1L)
                 .when()
                     .get("{id}")
                 .then()
@@ -171,38 +167,17 @@ public class EmployeeControllerTest extends AbstractIntegrationTest {
 
         assertEquals(1L, persistedEmployee.getId());
         assertEquals("Matheus", persistedEmployee.getFirstName());
-        assertEquals("Andrade", persistedEmployee.getLastName());
-        assertEquals("New York City, New York, US", persistedEmployee.getAddress());
+        assertEquals("Figueira de Andrade", persistedEmployee.getLastName());
+        assertEquals("Strathtulloh, Victoria - Australia", persistedEmployee.getAddress());
     }
 
     @Test
     @Order(4)
     public void testFindByIdWithWrongOrigin() throws JsonProcessingException {
-        EmployeeDTO employee = new EmployeeDTO();
-        employee.setId(1L);
-        employee.setFirstName("Matheus");
-        employee.setMiddleName("Lincon");
-        employee.setLastName("Andrade");
-        employee.setEmail("matheus@email.com");
-        employee.setMobile("123123123");
-        employee.setAddress("New York City, New York, US");
-        employee.setContractType("Permanent");
-        employee.setStartDate("21/01/2000");
-        employee.setFinishDate("21/01/2010");
-        employee.setHoursType("Full-time");
-        employee.setHoursPerWeek(40);
-
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfig.HEADER_PARAM_ORIGIN, "https://matheuslincon.com")
-                .setBasePath("/employee")
-                .setPort(TestConfig.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given().spec(specification)
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
-                .pathParam("id", employee.getId())
+                .header(TestConfig.HEADER_PARAM_ORIGIN, "https://matheuslincon.com")
+                .pathParam("id", 1L)
                 .when()
                     .get("{id}")
                 .then()

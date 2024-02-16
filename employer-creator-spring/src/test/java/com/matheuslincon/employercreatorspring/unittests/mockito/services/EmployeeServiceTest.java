@@ -30,7 +30,6 @@ import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
 class EmployeeServiceTest {
 
     MockEmployee input;
@@ -69,7 +68,7 @@ class EmployeeServiceTest {
         assertNotNull(employee1.getId());
         assertNotNull(employee1.getLinks());
 
-        assertTrue(employee1.toString().contains("links: [<http://localhost/employee/1>;rel=\"self\"]"));
+        assertTrue(employee1.toString().contains("links: [</api/employee/1>;rel=\"self\"]"));
 
         assertEquals("First Name Test1", employee1.getFirstName());
         assertEquals("Last Name Test1", employee1.getLastName());
@@ -89,7 +88,7 @@ class EmployeeServiceTest {
         assertNotNull(employee3.getId());
         assertNotNull(employee3.getLinks());
 
-        assertTrue(employee3.toString().contains("links: [<http://localhost/employee/3>;rel=\"self\"]"));
+        assertTrue(employee3.toString().contains("links: [</api/employee/3>;rel=\"self\"]"));
 
         assertEquals("First Name Test3", employee3.getFirstName());
         assertEquals("Last Name Test3", employee3.getLastName());
@@ -118,7 +117,7 @@ class EmployeeServiceTest {
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertTrue(result.toString().contains("links: [<http://localhost/employee/1>;rel=\"self\"]"));
+        assertTrue(result.toString().contains("links: [</api/employee/1>;rel=\"self\"]"));
 
         assertEquals("First Name Test1", result.getFirstName());
         assertEquals("Last Name Test1", result.getLastName());
@@ -149,7 +148,7 @@ class EmployeeServiceTest {
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertTrue(result.toString().contains("links: [<http://localhost/employee/1>;rel=\"self\"]"));
+        assertTrue(result.toString().contains("links: [</api/employee/1>;rel=\"self\"]"));
 
         assertEquals("First Name Test1", result.getFirstName());
         assertEquals("Last Name Test1", result.getLastName());
@@ -194,7 +193,7 @@ class EmployeeServiceTest {
         assertNotNull(result.getId());
         assertNotNull(result.getLinks());
 
-        assertTrue(result.toString().contains("links: [<http://localhost/employee/1>;rel=\"self\"]"));
+        assertTrue(result.toString().contains("links: [</api/employee/1>;rel=\"self\"]"));
 
         assertEquals("First Name Test1", result.getFirstName());
         assertEquals("Last Name Test1", result.getLastName());

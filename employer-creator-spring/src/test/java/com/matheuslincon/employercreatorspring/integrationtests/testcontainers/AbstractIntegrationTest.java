@@ -1,6 +1,5 @@
 package com.matheuslincon.employercreatorspring.integrationtests.testcontainers;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
