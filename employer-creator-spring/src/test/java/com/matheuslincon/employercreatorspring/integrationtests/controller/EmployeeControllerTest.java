@@ -1,18 +1,14 @@
 package com.matheuslincon.employercreatorspring.integrationtests.controller;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matheuslincon.employercreatorspring.config.TestConfig;
-import com.matheuslincon.employercreatorspring.integrationtests.dto.AccountCredentialsDTO;
-import com.matheuslincon.employercreatorspring.integrationtests.dto.EmployeeCreateDTO;
-import com.matheuslincon.employercreatorspring.integrationtests.dto.EmployeeDTO;
-import com.matheuslincon.employercreatorspring.integrationtests.dto.TokenDTO;
+import com.matheuslincon.employercreatorspring.integrationtests.dto.*;
 import com.matheuslincon.employercreatorspring.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
