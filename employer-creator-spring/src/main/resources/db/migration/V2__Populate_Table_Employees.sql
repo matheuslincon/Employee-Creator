@@ -1,0 +1,7 @@
+INSERT INTO `employees` (`id`, `first_name`, `middle_name`, `last_name`, `email`, `mobile`, `address`, `contract_type`, `start_date`, `finish_date`, `hours_type`, `hours_per_week`) VALUES
+	(1, 'Matheus', 'Lincon', 'Figueira de Andrade', 'matheus@gmail.com', '123123123', 'Strathtulloh, Victoria - Australia', 'Permanent', '21/01/2010', '21/01/2020', 'Full-Time', 40),
+	(2, 'Nancy', 'Yu-Wen', 'Huang', 'nancy@gmail.com', '456456456', 'Strathtulloh, Victoria - Australia', 'Contract', '21/02/2010', '21/02/2020', 'Part-Time', 20),
+	(3, 'Nala', 'Babechina', 'Figueira de Andrade', 'nala@gmail.com', '789789789', 'Strathtulloh, Victoria - Australia', 'Permanent', '12/11/2015', '21/01/2020', 'Full-Time', 30),
+	(4, 'Silvia', 'Aparecida', 'Figueira de Andrade', 'matheus@gmail.com', '345345345', 'Strathtulloh, Victoria - Australia', 'Permanent', '21/01/2010', '21/01/2020', 'Full-Time', 35),
+	(5, 'Felipe', 'Eduardo', 'Figueira de Andrade', 'matheus@gmail.com', '678678678', 'Strathtulloh, Victoria - Australia', 'Contract', '21/01/2010', '21/01/2020', 'Part-Time', 15),
+	(6, 'Andreza', 'Janaina', 'Figueira de Andrade', 'matheus@gmail.com', '543543543', 'Strathtulloh, Victoria - Australia', 'Permanent', '21/01/2010', '21/01/2020', 'Full-Time', 45);
