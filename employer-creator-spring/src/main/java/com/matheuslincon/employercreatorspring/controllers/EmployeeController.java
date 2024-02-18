@@ -12,11 +12,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -38,8 +41,15 @@ public class EmployeeController {
             @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
             @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
     })
-    public ResponseEntity<List<EmployeeDTO>> findAll() {
-        return new ResponseEntity<>(this.service.findAll(), HttpStatus.OK);
+    public ResponseEntity<PagedModel<EntityModel<EmployeeDTO>>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                                        @RequestParam(value = "size", defaultValue = "4") Integer size,
+                                                                        @RequestParam(value = "direction", defaultValue = "asc") String direction) {
+
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
+
+        return new ResponseEntity<>(this.service.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

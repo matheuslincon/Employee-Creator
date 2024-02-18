@@ -12,10 +12,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeService {
@@ -26,15 +30,19 @@ public class EmployeeService {
     @Autowired
     private ModelMapper mapper;
 
-    public List<EmployeeDTO> findAll() {
-        List<Employee> employeeList = repository.findAll();
-        return employeeList.stream()
-                .map(employee -> {
-                    EmployeeDTO employeeDTO = mapper.map(employee, EmployeeDTO.class);
-                    employeeDTO.add(linkTo(methodOn(EmployeeController.class).findById(employeeDTO.getId())).withSelfRel());
-                    return employeeDTO;
-                })
-                .collect(Collectors.toList());
+    @Autowired
+    PagedResourcesAssembler<EmployeeDTO> assembler;
+
+    public PagedModel<EntityModel<EmployeeDTO>> findAll(Pageable pageable) {
+        Page<Employee> employeePage = repository.findAll(pageable);
+
+        var employeesDTOPage = employeePage.map(e -> mapper.map(e, EmployeeDTO.class));
+
+        employeesDTOPage.map(e -> e.add(linkTo(methodOn(EmployeeController.class).findById(e.getId())).withSelfRel()));
+
+        Link link = linkTo(methodOn(EmployeeController.class).findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
+
+        return assembler.toModel(employeesDTOPage, link);
     }
 
     public EmployeeDTO findById(Long id) {
