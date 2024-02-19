@@ -45,6 +45,19 @@ public class EmployeeService {
         return assembler.toModel(employeesDTOPage, link);
     }
 
+    public PagedModel<EntityModel<EmployeeDTO>> findEmployeesByName(String firstName, Pageable pageable) {
+
+        Page<Employee> employeePage = repository.findEmployeesByName(firstName, pageable);
+
+        var employeesDTOPage = employeePage.map(e -> mapper.map(e, EmployeeDTO.class));
+
+        employeesDTOPage.map(e -> e.add(linkTo(methodOn(EmployeeController.class).findById(e.getId())).withSelfRel()));
+
+        Link link = linkTo(methodOn(EmployeeController.class).findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
+
+        return assembler.toModel(employeesDTOPage, link);
+    }
+
     public EmployeeDTO findById(Long id) {
         Employee employee = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID !"));
         EmployeeDTO dto = mapper.map(employee, EmployeeDTO.class);
