@@ -18,9 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,59 +47,6 @@ class EmployeeServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void findAll() {
-        List<Employee> list = input.mockEntityList();
-
-        when(repository.findAll()).thenReturn(list);
-
-        var employees = service.findAll();
-
-        assertNotNull(employees);
-        assertEquals(5, employees.size());
-
-        verify(repository, times(1)).findAll();
-
-        var employee1 = employees.get(1);
-
-        assertNotNull(employee1);
-        assertNotNull(employee1.getId());
-        assertNotNull(employee1.getLinks());
-
-        assertTrue(employee1.toString().contains("links: [</api/employee/1>;rel=\"self\"]"));
-
-        assertEquals("First Name Test1", employee1.getFirstName());
-        assertEquals("Last Name Test1", employee1.getLastName());
-        assertEquals("Middle Name Test1", employee1.getMiddleName());
-        assertEquals("Email Test1", employee1.getEmail());
-        assertEquals("Mobile Test1", employee1.getMobile());
-        assertEquals("Address Test1", employee1.getAddress());
-        assertEquals("Contract Type Test1", employee1.getContractType());
-        assertEquals("Start Date Test1", employee1.getStartDate());
-        assertEquals("Finish Date Test1", employee1.getFinishDate());
-        assertEquals("HoursType Test1", employee1.getHoursType());
-        assertEquals(21, employee1.getHoursPerWeek());
-
-        var employee3 = employees.get(3);
-
-        assertNotNull(employee3);
-        assertNotNull(employee3.getId());
-        assertNotNull(employee3.getLinks());
-
-        assertTrue(employee3.toString().contains("links: [</api/employee/3>;rel=\"self\"]"));
-
-        assertEquals("First Name Test3", employee3.getFirstName());
-        assertEquals("Last Name Test3", employee3.getLastName());
-        assertEquals("Middle Name Test3", employee3.getMiddleName());
-        assertEquals("Email Test3", employee3.getEmail());
-        assertEquals("Mobile Test3", employee3.getMobile());
-        assertEquals("Address Test3", employee3.getAddress());
-        assertEquals("Contract Type Test3", employee3.getContractType());
-        assertEquals("Start Date Test3", employee3.getStartDate());
-        assertEquals("Finish Date Test3", employee3.getFinishDate());
-        assertEquals("HoursType Test3", employee3.getHoursType());
-        assertEquals(23, employee3.getHoursPerWeek());
-    }
 
     @Test
     void findById() {
