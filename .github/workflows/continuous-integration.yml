@@ -31,7 +31,9 @@ jobs:
 
     - name: Docker Compose Build.
       working-directory: ./Employee-Creator/backend
-      run: docker compose build
+      run: |
+        - pwd # com isso vc vai saber onde exatamente você está na árvore de diretórios
+        - mvn clean package
 
     - name: Push to Docker Hub Container Registry.
       run: |
