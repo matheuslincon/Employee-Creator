@@ -30,7 +30,7 @@ jobs:
       run: mvn clean package
 
     - name: Docker Compose Build.
-      working-directory: ./Employee-Creator/backend
+      working-directory: /home/runner/work/Employee-Creator/backend
       run: |
         - pwd # com isso vc vai saber onde exatamente você está na árvore de diretórios
         - mvn clean package
