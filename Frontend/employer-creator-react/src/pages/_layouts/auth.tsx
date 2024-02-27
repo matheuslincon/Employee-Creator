@@ -10,10 +10,10 @@ export const AuthLayout = () => {
           <span className="font-semibold">Employers Creator</span>
         </div>
         <footer className="text-sm">
-          Matheus panel &copy; Employers Creator - {new Date().getFullYear()}
+          Matheus App &copy; Employers Creator - {new Date().getFullYear()}
         </footer>
       </div>
-      <div className="relative flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <Outlet />
       </div>
     </div>
