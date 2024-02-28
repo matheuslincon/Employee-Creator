@@ -1,14 +1,17 @@
+import { useMutation } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { signIn } from '@/api/sign-in'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 const signInForm = z.object({
-  email: z.string().email(),
+  username: z.string(),
   password: z.string(),
 })
 
@@ -21,11 +24,20 @@ export const SignIn = () => {
     formState: { isSubmitting },
   } = useForm<SignInForm>()
 
+  const navigate = useNavigate()
+
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn,
+    onSuccess: (response) => {
+      const accessToken = response.accessToken
+      localStorage.setItem('accessToken', accessToken)
+      navigate('/')
+    },
+  })
+
   const handleSignIn = async (data: SignInForm) => {
     try {
-      console.log(data)
-
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await authenticate({ username: data.username, password: data.password })
 
       toast.success('Authentication successful.')
     } catch {
@@ -49,8 +61,8 @@ export const SignIn = () => {
 
           <form onSubmit={handleSubmit(handleSignIn)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...register('email')} />
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" type="text" {...register('username')} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Passowrd</Label>
