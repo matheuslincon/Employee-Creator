@@ -57,7 +57,7 @@ export const SignIn = () => {
               <Input id="password" type="password" {...register('password')} />
             </div>
             <Button disabled={isSubmitting} className="w-full" type="submit">
-              Access panel
+              Access App
             </Button>
           </form>
         </div>
